@@ -45,3 +45,6 @@ Thumbs.db
 # test / cache
 coverage/
 .cache/
+
+# build artifacts from dry-run checks
+dist-check/
