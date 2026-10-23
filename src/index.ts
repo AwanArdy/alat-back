@@ -1,8 +1,7 @@
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
 import { GoogleGenAI } from '@google/genai'
-import pdfParse from 'pdf-parse'
-import { arrayBuffer } from 'node:stream/consumers';
+import { extractText } from 'unpdf'
 
 type Bindings = {
   GEMINI_API_KEY: string;
@@ -12,10 +11,9 @@ const app = new Hono<{ Bindings: Bindings }>();
 
 app.use('*', cors());
 
-async function extractTextFromPdf(fileBuffer: ArrayBuffer): Promise<string> {
-  const buffer = Buffer.from(fileBuffer);
-  const data = await pdfParse(buffer);
-  return data.text;
+async function extractTextFromPdf(arrayBuffer: ArrayBuffer): Promise<string> {
+  const { text } = await extractText(new Uint8Array(arrayBuffer), { mergePages: true });
+  return text;
 }
 
 // ringkas PDF (AI)
